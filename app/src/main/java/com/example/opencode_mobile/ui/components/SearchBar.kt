@@ -1,6 +1,7 @@
 package com.example.opencode_mobile.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -24,14 +27,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
-import androidx.compose.ui.text.font.FontFamily
 
 @Composable
 fun SearchBar(
     placeholder: String,
+    onQueryChange: (String) -> Unit = {},
+    onSortToggle: () -> Unit = {},
+    sortAscending: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     var text by remember { mutableStateOf("") }
@@ -42,7 +47,6 @@ fun SearchBar(
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Search Input Field (Filled style using #2b2726, 8px corner radius)
         Row(
             modifier = Modifier
                 .weight(1f)
@@ -57,7 +61,7 @@ fun SearchBar(
                 tint = Color(0xFF998D97),
                 modifier = Modifier.padding(end = 8.dp)
             )
-            
+
             Box(modifier = Modifier.weight(1f)) {
                 if (text.isEmpty()) {
                     Text(
@@ -68,7 +72,10 @@ fun SearchBar(
                 }
                 BasicTextField(
                     value = text,
-                    onValueChange = { text = it },
+                    onValueChange = {
+                        text = it
+                        onQueryChange(it)
+                    },
                     textStyle = TextStyle(color = Color(0xFFE9E1DF), fontSize = 16.sp),
                     cursorBrush = SolidColor(Color(0xFFEDB2F1)),
                     modifier = Modifier.fillMaxWidth()
@@ -78,20 +85,30 @@ fun SearchBar(
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        // "Recent" Chip (Surface-variant background #383433, 8px radius, Monospace text)
         Box(
             modifier = Modifier
                 .height(48.dp)
                 .background(Color(0xFF383433), RoundedCornerShape(8.dp))
+                .clickable { onSortToggle() }
                 .padding(horizontal = 20.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = "Recent",
-                color = Color(0xFFE9E1DF),
-                fontFamily = FontFamily.Monospace,
-                fontSize = 14.sp
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = if (sortAscending) "Oldest" else "Recent",
+                    color = Color(0xFFE9E1DF),
+                    fontFamily = FontFamily.Monospace,
+                    fontSize = 14.sp
+                )
+                Spacer(Modifier.width(4.dp))
+                Icon(
+                    imageVector = if (sortAscending) Icons.AutoMirrored.Filled.KeyboardArrowRight
+                    else Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Sort order",
+                    tint = Color(0xFFE9E1DF),
+                    modifier = Modifier.padding(top = 2.dp)
+                )
+            }
         }
     }
 }
