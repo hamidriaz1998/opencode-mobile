@@ -9,7 +9,17 @@ object Routes {
     const val REVIEW = "review/{sessionId}"
 
     fun projects(connectionId: String) = "projects/$connectionId"
-    fun sessions(projectId: String, projectWorktree: String) = "sessions/$projectId/$projectWorktree"
-    fun chat(sessionId: String) = "chat/$sessionId"
-    fun review(sessionId: String) = "review/$sessionId"
+    fun sessions(projectId: String, projectWorktree: String): String {
+        val encoded = java.net.URLEncoder.encode(projectWorktree, "UTF-8")
+        return "sessions/$projectId/$encoded"
+    }
+    fun chat(sessionId: String): String {
+        val encoded = java.net.URLEncoder.encode(sessionId, "UTF-8")
+        return "chat/$encoded"
+    }
+
+    fun review(sessionId: String): String {
+        val encoded = java.net.URLEncoder.encode(sessionId, "UTF-8")
+        return "review/$encoded"
+    }
 }

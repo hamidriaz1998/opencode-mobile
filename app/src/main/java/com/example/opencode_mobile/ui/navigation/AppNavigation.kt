@@ -133,7 +133,8 @@ fun AppNavigation(
                     navArgument("projectWorktree") { type = NavType.StringType }
                 )
             ) { backStackEntry ->
-                val projectWorktree = backStackEntry.arguments?.getString("projectWorktree") ?: ""
+                val rawWorktree = backStackEntry.arguments?.getString("projectWorktree") ?: ""
+                val projectWorktree = java.net.URLDecoder.decode(rawWorktree, "UTF-8")
                 SessionsScreen(
                     projectWorktree = projectWorktree,
                     onSessionClick = { sessionId ->

@@ -54,7 +54,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
-                val messages = messageRepository.getMessages(sessionId)
+                val messages = messageRepository.getMessages(sessionId).reversed()
                 _uiState.value = _uiState.value.copy(
                     messages = messages,
                     isLoading = false
@@ -187,7 +187,7 @@ class ChatViewModel @Inject constructor(
             sseEventSource?.cancel()
             sseEventSource = null
             try {
-                val messages = messageRepository.getMessages(sessionId)
+                val messages = messageRepository.getMessages(sessionId).reversed()
                 _uiState.value = _uiState.value.copy(
                     messages = messages,
                     streamingMessageId = null,
