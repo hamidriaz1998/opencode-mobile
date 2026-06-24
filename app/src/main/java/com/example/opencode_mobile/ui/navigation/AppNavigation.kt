@@ -27,6 +27,10 @@ import com.example.opencode_mobile.data.api.ApiServiceProvider
 import com.example.opencode_mobile.data.local.ConnectionManager
 import com.example.opencode_mobile.data.local.ConnectionStore
 import com.example.opencode_mobile.ui.screens.home.HomeScreen
+import com.example.opencode_mobile.ui.screens.chat.ChatScreen
+import com.example.opencode_mobile.ui.screens.projects.ProjectsScreen
+import com.example.opencode_mobile.ui.screens.review.ReviewScreen
+import com.example.opencode_mobile.ui.screens.sessions.SessionsScreen
 import com.example.opencode_mobile.ui.screens.settings.SettingsScreen
 
 data class BottomNavItem(
@@ -114,7 +118,52 @@ fun AppNavigation(
                 route = Routes.PROJECTS,
                 arguments = listOf(navArgument("connectionId") { type = NavType.StringType })
             ) {
-                PlaceholderScreen("Projects", onBack = { navController.popBackStack() })
+                ProjectsScreen(
+                    onProjectClick = { projectId, projectWorktree ->
+                        navController.navigate(Routes.sessions(projectId, projectWorktree))
+                    },
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = Routes.SESSIONS,
+                arguments = listOf(
+                    navArgument("projectId") { type = NavType.StringType },
+                    navArgument("projectWorktree") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val projectWorktree = backStackEntry.arguments?.getString("projectWorktree") ?: ""
+                SessionsScreen(
+                    projectWorktree = projectWorktree,
+                    onSessionClick = { sessionId ->
+                        navController.navigate(Routes.chat(sessionId))
+                    },
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = Routes.CHAT,
+                arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val sessionId = backStackEntry.arguments?.getString("sessionId") ?: ""
+                ChatScreen(
+                    sessionId = sessionId,
+                    onReviewClick = { navController.navigate(Routes.review(sessionId)) },
+                    onBackClick = { navController.popBackStack() }
+                )
+            }
+
+            composable(
+                route = Routes.REVIEW,
+                arguments = listOf(navArgument("sessionId") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val sessionId = backStackEntry.arguments?.getString("sessionId") ?: ""
+                ReviewScreen(
+                    sessionId = sessionId,
+                    onBackClick = { navController.popBackStack() }
+                )
             }
         }
     }
