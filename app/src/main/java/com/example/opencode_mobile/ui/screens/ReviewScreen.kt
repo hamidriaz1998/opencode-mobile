@@ -50,7 +50,7 @@ fun ReviewScreen(
                 onBackClick = onBackClick
             )
         },
-        containerColor = Color.White
+        containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -61,7 +61,7 @@ fun ReviewScreen(
         ) {
             Text(
                 text = "Review Changes",
-                color = Color(0xFFC7C5C3),
+                color = Color(0xFFE9E1DF), // on-background from DESIGN.md
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Light
             )
@@ -76,7 +76,7 @@ fun ReviewScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         text = "1 file changed",
-                        color = Color(0xFF8A8886),
+                        color = Color(0xFF998D97), // outline from DESIGN.md
                         fontSize = 15.sp
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -97,14 +97,14 @@ fun ReviewScreen(
 
                 Text(
                     text = "Collapse all",
-                    color = Color(0xFF8A8886),
+                    color = Color(0xFF998D97), // outline from DESIGN.md
                     fontSize = 15.sp,
                     modifier = Modifier.clickable { /* No-op POC */ }
                 )
             }
 
             Spacer(modifier = Modifier.height(12.dp))
-            HorizontalDivider(color = Color(0xFFE2E0DE), thickness = 1.dp)
+            HorizontalDivider(color = Color(0xFF2B2726), thickness = 1.dp) // divider border color from DESIGN.md
             Spacer(modifier = Modifier.height(16.dp))
 
             // Diff Card (Expanded)

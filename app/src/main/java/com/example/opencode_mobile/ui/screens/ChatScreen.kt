@@ -59,10 +59,10 @@ fun ChatScreen(
                     Button(
                         onClick = onReviewClick,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF5A315E),
-                            contentColor = Color.White
+                            containerColor = Color(0xFFEDB2F1), // primary from DESIGN.md
+                            contentColor = Color(0xFF64336C) // text color from DESIGN.md
                         ),
-                        shape = RoundedCornerShape(8.dp),
+                        shape = RoundedCornerShape(100.dp), // full pill shape
                         modifier = Modifier.padding(end = 4.dp)
                     ) {
                         Text(text = "Review", fontSize = 14.sp)
@@ -147,7 +147,7 @@ fun ChatScreen(
                 }
             }
         },
-        containerColor = Color.White
+        containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -176,7 +176,7 @@ fun ChatScreen(
             CommandWidget(command = "bash Lint web package")
             Spacer(modifier = Modifier.height(12.dp))
 
-            HorizontalDivider(color = Color(0xFFE2E0DE), thickness = 1.dp)
+            HorizontalDivider(color = Color(0xFF2B2726), thickness = 1.dp)
             Spacer(modifier = Modifier.height(12.dp))
 
             // Diff Card (Collapsed inside Chat)

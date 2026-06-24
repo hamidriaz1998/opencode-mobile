@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 fun CodeBadgeText(
     text: String,
     modifier: Modifier = Modifier,
-    textColor: Color = Color(0xFFA09E9C) // Muted light gray from the screenshots
+    textColor: Color = Color(0xFFE9E1DF) // on-background color from DESIGN.md
 ) {
     val parts = text.split("`")
     
@@ -31,16 +31,16 @@ fun CodeBadgeText(
             if (part.isEmpty()) return@forEachIndexed
             
             if (index % 2 == 1) {
-                // Inline Code Badge
+                // Inline Code Badge (dark surface, lavender text)
                 Box(
                     modifier = Modifier
                         .padding(horizontal = 4.dp, vertical = 2.dp)
-                        .background(Color(0xFF1E1C1A), RoundedCornerShape(4.dp))
+                        .background(Color(0xFF1E1B1A), RoundedCornerShape(4.dp))
                         .padding(horizontal = 6.dp, vertical = 2.dp)
                 ) {
                     Text(
                         text = part,
-                        color = Color(0xFFEFB8C8), // Light pink/lavender text for code
+                        color = Color(0xFFEDB2F1), // primary lavender from DESIGN.md
                         fontFamily = FontFamily.Monospace,
                         fontSize = 13.sp
                     )

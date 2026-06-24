@@ -24,6 +24,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.MaterialTheme
+
 data class ListItemData(
     val title: String,
     val subtext: String
@@ -39,8 +42,9 @@ fun ListItemCard(
         modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF181615)),
-        shape = RoundedCornerShape(20.dp)
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF141110)),
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, Color(0xFF2B2726))
     ) {
         Column {
             items.forEachIndexed { index, item ->
@@ -56,7 +60,7 @@ fun ListItemCard(
                     ) {
                         Text(
                             text = item.title,
-                            color = Color.White,
+                            color = Color(0xFFE9E1DF), // on-surface color from DESIGN.md
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
                             maxLines = 1,
@@ -64,7 +68,7 @@ fun ListItemCard(
                         )
                         Text(
                             text = item.subtext,
-                            color = Color(0xFF8A8886),
+                            color = Color(0xFF998D97), // outline/muted text
                             fontSize = 13.sp,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis,
@@ -77,13 +81,13 @@ fun ListItemCard(
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowRight,
                         contentDescription = "Navigate",
-                        tint = Color(0xFFC7C5C3)
+                        tint = Color(0xFF998D97)
                     )
                 }
 
                 if (index < items.size - 1) {
                     HorizontalDivider(
-                        color = Color(0xFF2A2826),
+                        color = Color(0xFF2B2726),
                         thickness = 1.dp,
                         modifier = Modifier.padding(horizontal = 20.dp)
                     )

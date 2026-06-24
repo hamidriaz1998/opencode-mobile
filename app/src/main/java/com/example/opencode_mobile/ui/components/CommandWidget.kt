@@ -20,6 +20,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+
 @Composable
 fun CommandWidget(
     command: String,
@@ -29,20 +32,21 @@ fun CommandWidget(
         modifier = modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp)
-            .background(Color(0xFF161413), RoundedCornerShape(8.dp))
+            .background(Color(0xFF141110), RoundedCornerShape(8.dp)) // Level 1 Cards surface color
+            .border(BorderStroke(1.dp, Color(0xFF2B2726)), RoundedCornerShape(8.dp))
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = Icons.Default.KeyboardArrowRight,
             contentDescription = null,
-            tint = Color(0xFFC7C5C3),
+            tint = Color(0xFF998D97), // outline color
             modifier = Modifier.size(16.dp)
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = command,
-            color = Color(0xFFE2E0DE),
+            color = Color(0xFFE9E1DF), // on-surface color
             fontFamily = FontFamily.Monospace,
             fontSize = 14.sp
         )

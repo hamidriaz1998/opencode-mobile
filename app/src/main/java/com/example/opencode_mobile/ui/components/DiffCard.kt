@@ -30,6 +30,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import androidx.compose.foundation.BorderStroke
+
 enum class DiffLineType {
     Normal, Addition, Deletion
 }
@@ -52,8 +54,9 @@ fun DiffCard(
 
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF181615)),
-        shape = RoundedCornerShape(16.dp)
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF141110)), // Level 1 Cards surface color
+        shape = RoundedCornerShape(16.dp),
+        border = BorderStroke(1.dp, Color(0xFF2B2726)) // 1px border #2b2726
     ) {
         Column {
             // Header Row
@@ -67,13 +70,13 @@ fun DiffCard(
                 Icon(
                     imageVector = if (expanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowRight,
                     contentDescription = "Expand/Collapse",
-                    tint = Color(0xFFC7C5C3)
+                    tint = Color(0xFF998D97) // outline color
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 
                 Text(
                     text = fileName,
-                    color = Color.White,
+                    color = Color(0xFFE9E1DF), // on-surface color
                     fontFamily = FontFamily.Monospace,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -97,37 +100,37 @@ fun DiffCard(
 
             // Expanded Diff Code Details
             if (expanded) {
-                HorizontalDivider(color = Color(0xFF2A2826))
+                HorizontalDivider(color = Color(0xFF2B2726))
 
                 // Show unchanged lines button
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFF12100F))
+                        .background(Color(0xFF100E0D)) // lowest container surface background
                         .padding(vertical = 8.dp),
                     horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Show unchanged lines (3)",
-                        color = Color(0xFF8A8886),
+                        color = Color(0xFF998D97), // outline color
                         fontSize = 12.sp
                     )
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = null,
-                        tint = Color(0xFF8A8886),
+                        tint = Color(0xFF998D97),
                         modifier = Modifier.padding(start = 4.dp)
                     )
                 }
 
-                HorizontalDivider(color = Color(0xFF2A2826))
+                HorizontalDivider(color = Color(0xFF2B2726))
 
                 // Diff lines
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFF12100F))
+                        .background(Color(0xFF100E0D))
                 ) {
                     diffLines.forEach { line ->
                         val backgroundColor = when (line.type) {
@@ -139,7 +142,7 @@ fun DiffCard(
                         val textColor = when (line.type) {
                             DiffLineType.Addition -> Color(0xFF81C784) // Light green
                             DiffLineType.Deletion -> Color(0xFFE57373) // Light red
-                            DiffLineType.Normal -> Color(0xFFE2E0DE)
+                            DiffLineType.Normal -> Color(0xFFE9E1DF) // on-surface color
                         }
 
                         Text(

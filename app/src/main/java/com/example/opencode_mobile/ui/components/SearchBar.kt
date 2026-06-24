@@ -27,6 +27,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import androidx.compose.ui.text.font.FontFamily
+
 @Composable
 fun SearchBar(
     placeholder: String,
@@ -40,19 +42,19 @@ fun SearchBar(
             .padding(horizontal = 16.dp, vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Search Input Field
+        // Search Input Field (Filled style using #2b2726, 8px corner radius)
         Row(
             modifier = Modifier
                 .weight(1f)
                 .height(48.dp)
-                .background(Color(0xFF1E1C1A), RoundedCornerShape(24.dp))
+                .background(Color(0xFF2B2726), RoundedCornerShape(8.dp))
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = "Search Icon",
-                tint = Color(0xFF8A8886),
+                tint = Color(0xFF998D97),
                 modifier = Modifier.padding(end = 8.dp)
             )
             
@@ -60,15 +62,15 @@ fun SearchBar(
                 if (text.isEmpty()) {
                     Text(
                         text = placeholder,
-                        color = Color(0xFF8A8886),
+                        color = Color(0xFF998D97),
                         fontSize = 16.sp
                     )
                 }
                 BasicTextField(
                     value = text,
                     onValueChange = { text = it },
-                    textStyle = TextStyle(color = Color.White, fontSize = 16.sp),
-                    cursorBrush = SolidColor(Color.White),
+                    textStyle = TextStyle(color = Color(0xFFE9E1DF), fontSize = 16.sp),
+                    cursorBrush = SolidColor(Color(0xFFEDB2F1)),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -76,18 +78,19 @@ fun SearchBar(
 
         Spacer(modifier = Modifier.width(12.dp))
 
-        // "Recent" Chip/Button
+        // "Recent" Chip (Surface-variant background #383433, 8px radius, Monospace text)
         Box(
             modifier = Modifier
                 .height(48.dp)
-                .background(Color(0xFF1E1C1A), RoundedCornerShape(24.dp))
+                .background(Color(0xFF383433), RoundedCornerShape(8.dp))
                 .padding(horizontal = 20.dp),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 text = "Recent",
-                color = Color.White,
-                fontSize = 16.sp
+                color = Color(0xFFE9E1DF),
+                fontFamily = FontFamily.Monospace,
+                fontSize = 14.sp
             )
         }
     }

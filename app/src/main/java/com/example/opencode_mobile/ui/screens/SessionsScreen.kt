@@ -51,9 +51,9 @@ fun SessionsScreen(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { /* No-op POC */ },
-                containerColor = Color(0xFF5A315E),
-                contentColor = Color.White,
-                shape = RoundedCornerShape(16.dp),
+                containerColor = Color(0xFFEDB2F1), // primary lavender from DESIGN.md
+                contentColor = Color(0xFF64336C), // text/icon color from DESIGN.md
+                shape = RoundedCornerShape(100.dp), // pill shape from DESIGN.md
                 modifier = Modifier.padding(bottom = 16.dp, end = 8.dp)
             ) {
                 Icon(
@@ -62,7 +62,7 @@ fun SessionsScreen(
                 )
             }
         },
-        containerColor = Color.White
+        containerColor = androidx.compose.material3.MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
