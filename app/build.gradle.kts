@@ -2,17 +2,13 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.kapt)
+    alias(libs.plugins.ksp)
     alias(libs.plugins.kotlinx.serialization)
 }
 
 android {
     namespace = "com.example.opencode_mobile"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.opencode_mobile"
@@ -64,7 +60,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.android.compiler)
     implementation(libs.hilt.navigation.compose)
 
     // Retrofit + OkHttp
@@ -80,13 +76,6 @@ dependencies {
     // DataStore
     implementation(libs.datastore.preferences)
 
-    // Markdown Renderer
-    implementation(libs.markdown.renderer)
-
     // Lifecycle Runtime Compose
     implementation(libs.lifecycle.runtime.compose)
-}
-
-kapt {
-    correctErrorTypes = true
 }
