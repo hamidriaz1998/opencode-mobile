@@ -37,6 +37,12 @@ import ru.wertik.orca.compose.OrcaStyle
 import ru.wertik.orca.compose.material3.rememberOrcaMaterialStyle
 import ru.wertik.orca.core.OrcaMarkdownParser
 
+private fun sanitizeStreamingMarkdown(md: String): String {
+    if (md.isBlank()) return md
+    val fenceCount = "```".toRegex().findAll(md).count()
+    return if (fenceCount % 2 != 0) "$md\n```" else md
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(
@@ -223,7 +229,7 @@ private fun AgentMessageContent(
                     val text = part.text ?: return@forEach
                     if (text.isNotBlank()) {
                         Orca(
-                            markdown = text,
+                            markdown = sanitizeStreamingMarkdown(text),
                             modifier = Modifier.padding(vertical = 4.dp),
                             parser = orcaParser,
                             parseCacheKey = part.id,
@@ -259,7 +265,7 @@ private fun StreamingContent(
                     val partText = part.text ?: ""
                     if (partText.isNotBlank()) {
                         Orca(
-                            markdown = partText,
+                            markdown = sanitizeStreamingMarkdown(partText),
                             modifier = Modifier.padding(vertical = 4.dp),
                             parser = orcaParser,
                             parseCacheKey = "stream-${part.id}",
@@ -276,7 +282,7 @@ private fun StreamingContent(
         }
         if (text.isNotBlank()) {
             Orca(
-                markdown = text,
+                markdown = sanitizeStreamingMarkdown(text),
                 modifier = Modifier.padding(vertical = 4.dp),
                 parser = orcaParser,
                 parseCacheKey = "stream-text",

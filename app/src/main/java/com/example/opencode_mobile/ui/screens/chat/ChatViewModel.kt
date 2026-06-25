@@ -3,7 +3,6 @@ package com.example.opencode_mobile.ui.screens.chat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.opencode_mobile.data.api.*
-import com.example.opencode_mobile.data.local.ConnectionManager
 import com.example.opencode_mobile.data.repository.MessageRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +41,9 @@ class ChatViewModel @Inject constructor(
 
     private var sseEventSource: EventSource? = null
     private var reloadJob: Job? = null
+    private var sendTimeoutJob: Job? = null
+    private val streamBuffer = StringBuilder()
+    private var flushJob: Job? = null
 
     private var sessionId: String = ""
 
@@ -74,13 +76,38 @@ class ChatViewModel @Inject constructor(
         val trimmed = text.trim()
         if (trimmed.isEmpty() || _uiState.value.isSending) return
 
-        viewModelScope.launch {
-            _uiState.value = _uiState.value.copy(isSending = true, error = null, streamingError = false)
+        val userPart = PartDto(
+            id = "", sessionID = sessionId, messageID = "", type = "text", text = trimmed
+        )
+        val userMessage = MessageWithPartsDto(
+            info = MessageDto(
+                id = "", sessionID = sessionId, role = "user",
+                time = MessageTimeDto(created = System.currentTimeMillis())
+            ),
+            parts = listOf(userPart)
+        )
+        _uiState.value = _uiState.value.copy(
+            isSending = true,
+            error = null,
+            streamingError = false,
+            messages = _uiState.value.messages + userMessage,
+            inputText = ""
+        )
 
+        viewModelScope.launch {
             try {
                 messageRepository.sendMessageAsync(sessionId, trimmed)
+                _uiState.value = _uiState.value.copy(isSending = false)
                 connectSse()
-                _uiState.value = _uiState.value.copy(inputText = "")
+                sendTimeoutJob = viewModelScope.launch {
+                    delay(30_000)
+                    if (_uiState.value.streamingMessageId != null ||
+                        _uiState.value.streamingParts.isNotEmpty() ||
+                        _uiState.value.streamingText.isNotBlank()
+                    ) {
+                        scheduleReload()
+                    }
+                }
             } catch (e: Exception) {
                 _uiState.value = _uiState.value.copy(
                     isSending = false,
@@ -103,6 +130,23 @@ class ChatViewModel @Inject constructor(
     fun disconnectSse() {
         sseEventSource?.cancel()
         sseEventSource = null
+    }
+
+    private fun scheduleFlush() {
+        if (flushJob?.isActive == true) return
+        flushJob = viewModelScope.launch {
+            delay(50)
+            flushStreamBuffer()
+        }
+    }
+
+    private fun flushStreamBuffer() {
+        val delta = streamBuffer.toString()
+        streamBuffer.clear()
+        if (delta.isBlank()) return
+        _uiState.value = _uiState.value.copy(
+            streamingText = _uiState.value.streamingText + delta
+        )
     }
 
     private fun connectSse() {
@@ -141,19 +185,10 @@ class ChatViewModel @Inject constructor(
                 )
             }
             "part_delta" -> {
-                val partId = event.properties.part?.id
                 val delta = event.properties.delta ?: return
-                if (partId != null && delta.isNotBlank()) {
-                    val updated = _uiState.value.streamingParts.map { part ->
-                        if (part.id == partId && part.type == "text") {
-                            part.copy(text = (part.text ?: "") + delta)
-                        } else part
-                    }
-                    _uiState.value = _uiState.value.copy(streamingParts = updated)
-                } else if (delta.isNotBlank()) {
-                    _uiState.value = _uiState.value.copy(
-                        streamingText = _uiState.value.streamingText + delta
-                    )
+                if (delta.isNotBlank()) {
+                    streamBuffer.append(delta)
+                    scheduleFlush()
                 }
             }
             "part_complete" -> {
@@ -188,6 +223,7 @@ class ChatViewModel @Inject constructor(
     }
 
     private fun scheduleReload() {
+        sendTimeoutJob?.cancel()
         reloadJob?.cancel()
         reloadJob = viewModelScope.launch {
             delay(500)
@@ -213,5 +249,8 @@ class ChatViewModel @Inject constructor(
     override fun onCleared() {
         super.onCleared()
         sseEventSource?.cancel()
+        sendTimeoutJob?.cancel()
+        flushJob?.cancel()
+        reloadJob?.cancel()
     }
 }
