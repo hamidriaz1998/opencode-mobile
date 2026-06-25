@@ -3,6 +3,7 @@ package com.example.opencode_mobile.ui.screens.sessions
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -36,6 +37,17 @@ fun SessionsScreen(
 
     LaunchedEffect(projectWorktree) {
         viewModel.loadSessions(projectWorktree)
+    }
+
+    val listState = rememberLazyListState()
+    val shouldLoadMore by remember {
+        derivedStateOf {
+            val lastVisible = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            lastVisible >= sessions.size - 3 && uiState.hasMore
+        }
+    }
+    LaunchedEffect(shouldLoadMore) {
+        if (shouldLoadMore) viewModel.loadMore()
     }
 
     Scaffold(
@@ -93,7 +105,9 @@ fun SessionsScreen(
                                 fontSize = 14.sp
                             )
                             Spacer(Modifier.height(12.dp))
-                            IconButton(onClick = { viewModel.loadSessions(projectWorktree) }) {
+                            IconButton(onClick = {
+                                viewModel.loadSessions(projectWorktree)
+                            }) {
                                 Icon(Icons.Default.Refresh, "Retry", tint = MaterialTheme.colorScheme.primary)
                             }
                         }
@@ -114,6 +128,7 @@ fun SessionsScreen(
                 }
                 else -> {
                     LazyColumn(
+                        state = listState,
                         contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
@@ -122,6 +137,19 @@ fun SessionsScreen(
                                 session = session,
                                 onClick = { onSessionClick(session.id) }
                             )
+                        }
+                        if (uiState.isLoadingMore) {
+                            item {
+                                Box(
+                                    modifier = Modifier.fillMaxWidth().padding(16.dp),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    CircularProgressIndicator(
+                                        modifier = Modifier.size(24.dp),
+                                        color = MaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
                         }
                     }
                 }

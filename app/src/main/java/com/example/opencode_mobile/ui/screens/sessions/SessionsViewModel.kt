@@ -14,6 +14,8 @@ import javax.inject.Inject
 data class SessionsUiState(
     val sessions: List<SessionDto> = emptyList(),
     val isLoading: Boolean = true,
+    val isLoadingMore: Boolean = false,
+    val hasMore: Boolean = true,
     val error: String? = null,
     val sortAscending: Boolean = false,
     val searchQuery: String = ""
@@ -27,13 +29,23 @@ class SessionsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SessionsUiState())
     val uiState: StateFlow<SessionsUiState> = _uiState.asStateFlow()
 
+    private var lastLoadedDirectory: String? = null
+
     fun loadSessions(directory: String? = null) {
+        if (directory == lastLoadedDirectory && _uiState.value.sessions.isNotEmpty()) return
+        lastLoadedDirectory = directory
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             try {
-                val sessions = sessionRepository.getSessions(directory = directory)
+                val sessions = sessionRepository.getSessions(
+                    directory = directory,
+                    roots = true,
+                    limit = 50,
+                    offset = 0
+                )
                 _uiState.value = _uiState.value.copy(
                     sessions = sessions,
+                    hasMore = sessions.size >= 50,
                     isLoading = false
                 )
             } catch (e: Exception) {
@@ -41,6 +53,29 @@ class SessionsViewModel @Inject constructor(
                     isLoading = false,
                     error = e.message ?: "Failed to load sessions"
                 )
+            }
+        }
+    }
+
+    fun loadMore() {
+        val state = _uiState.value
+        if (!state.hasMore || state.isLoadingMore) return
+        _uiState.value = state.copy(isLoadingMore = true)
+        viewModelScope.launch {
+            try {
+                val next = sessionRepository.getSessions(
+                    directory = lastLoadedDirectory,
+                    roots = true,
+                    limit = 50,
+                    offset = state.sessions.size
+                )
+                _uiState.value = _uiState.value.copy(
+                    sessions = _uiState.value.sessions + next,
+                    hasMore = next.size >= 50,
+                    isLoadingMore = false
+                )
+            } catch (_: Exception) {
+                _uiState.value = _uiState.value.copy(isLoadingMore = false)
             }
         }
     }

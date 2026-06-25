@@ -15,16 +15,20 @@ class ApiServiceProvider @Inject constructor(
     private var service: OpencodeApiService? = null
 
     fun getApi(): OpencodeApiService {
-        val cached = service
-        if (cached != null && currentBaseUrl != null) return cached
-        throw IllegalStateException("API service not initialized. Call init(baseUrl) first.")
+        synchronized(this) {
+            val cached = service
+            if (cached != null && currentBaseUrl != null) return cached
+            throw IllegalStateException("API service not initialized. Call init(baseUrl) first.")
+        }
     }
 
     fun init(baseUrl: String) {
         val normalized = if (baseUrl.endsWith("/")) baseUrl.dropLast(1) else baseUrl
-        if (normalized == currentBaseUrl && service != null) return
-        currentBaseUrl = normalized
-        service = createApiService(normalized, okHttpClient)
+        synchronized(this) {
+            if (normalized == currentBaseUrl && service != null) return
+            currentBaseUrl = normalized
+            service = createApiService(normalized, okHttpClient)
+        }
     }
 
     fun getBaseUrl(): String? = currentBaseUrl

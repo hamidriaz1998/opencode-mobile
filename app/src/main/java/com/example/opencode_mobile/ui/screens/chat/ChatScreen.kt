@@ -58,6 +58,12 @@ fun ChatScreen(
         }
     }
 
+    DisposableEffect(sessionId) {
+        onDispose {
+            viewModel.disconnectSse()
+        }
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(

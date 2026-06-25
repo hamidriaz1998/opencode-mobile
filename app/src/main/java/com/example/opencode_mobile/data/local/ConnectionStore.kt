@@ -6,7 +6,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
@@ -36,13 +36,13 @@ class ConnectionStore @Inject constructor(
     }
 
     private val _connections = MutableStateFlow<List<Connection>>(emptyList())
-    val connections: Flow<List<Connection>> = _connections.asStateFlow()
+    val connections: StateFlow<List<Connection>> = _connections.asStateFlow()
 
     private val _activeConnectionId = MutableStateFlow<String?>(null)
-    val activeConnectionId: Flow<String?> = _activeConnectionId.asStateFlow()
+    val activeConnectionId: StateFlow<String?> = _activeConnectionId.asStateFlow()
 
     private val _activeConnection = MutableStateFlow<Connection?>(null)
-    val activeConnection: Flow<Connection?> = _activeConnection.asStateFlow()
+    val activeConnection: StateFlow<Connection?> = _activeConnection.asStateFlow()
 
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
         when (key) {
