@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.sse.EventSource
+import timber.log.Timber
 import javax.inject.Inject
 
 data class ChatUiState(
@@ -195,7 +196,8 @@ class ChatViewModel @Inject constructor(
                     streamingText = "",
                     isSending = false
                 )
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to reload messages after SSE")
                 _uiState.value = _uiState.value.copy(isSending = false)
             }
         }

@@ -13,6 +13,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "connections")
 
@@ -29,7 +30,8 @@ class ConnectionStore @Inject constructor(
         val raw = prefs[connectionsKey] ?: "[]"
         try {
             json.decodeFromString<List<Connection>>(raw)
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to decode connections")
             emptyList()
         }
     }
@@ -43,7 +45,8 @@ class ConnectionStore @Inject constructor(
         val id = prefs[activeConnectionIdKey]
         try {
             json.decodeFromString<List<Connection>>(raw).find { it.id == id }
-        } catch (_: Exception) {
+        } catch (e: Exception) {
+            Timber.e(e, "Failed to decode active connection")
             null
         }
     }
@@ -53,7 +56,8 @@ class ConnectionStore @Inject constructor(
             val raw = prefs[connectionsKey] ?: "[]"
             val list = try {
                 json.decodeFromString<List<Connection>>(raw).toMutableList()
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to decode connections in addConnection")
                 mutableListOf()
             }
             list.add(connection)
@@ -66,7 +70,8 @@ class ConnectionStore @Inject constructor(
             val raw = prefs[connectionsKey] ?: "[]"
             val list = try {
                 json.decodeFromString<List<Connection>>(raw).toMutableList()
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to decode connections in updateConnection")
                 mutableListOf()
             }
             val index = list.indexOfFirst { it.id == connection.id }
@@ -82,7 +87,8 @@ class ConnectionStore @Inject constructor(
             val raw = prefs[connectionsKey] ?: "[]"
             val list = try {
                 json.decodeFromString<List<Connection>>(raw).toMutableList()
-            } catch (_: Exception) {
+            } catch (e: Exception) {
+                Timber.e(e, "Failed to decode connections in deleteConnection")
                 mutableListOf()
             }
             list.removeAll { it.id == id }

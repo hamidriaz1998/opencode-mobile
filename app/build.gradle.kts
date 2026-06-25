@@ -35,6 +35,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -82,4 +83,7 @@ dependencies {
     // Orca Markdown
     implementation(libs.orca.compose)
     implementation(libs.orca.compose.material3)
+
+    // Timber
+    implementation(libs.timber)
 }

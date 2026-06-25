@@ -18,6 +18,7 @@ kotlinxSerialization = "1.11.0"
 datastore = "1.2.1"
 lifecycleRuntimeCompose = "2.8.7"
 orca = "0.13.0"
+timber = "5.0.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -50,6 +51,7 @@ datastore-preferences = { group = "androidx.datastore", name = "datastore-prefer
 lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 orca-compose = { module = "ru.wertik:orca-compose", version.ref = "orca" }
 orca-compose-material3 = { module = "ru.wertik:orca-compose-material3", version.ref = "orca" }
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

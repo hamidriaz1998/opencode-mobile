@@ -129,9 +129,6 @@ private fun ConnectionCard(
             containerColor = if (isActive) MaterialTheme.colorScheme.surfaceContainer else CardBg
         ),
         shape = RoundedCornerShape(16.dp),
-        border = CardDefaults.outlinedCardBorder().copy(
-            width = if (isActive) 2.dp else 1.dp
-        )
     ) {
         Row(
             modifier = Modifier

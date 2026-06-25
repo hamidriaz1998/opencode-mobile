@@ -10,6 +10,7 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.http.*
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
+import timber.log.Timber
 
 interface OpencodeApiService {
 
@@ -122,7 +123,9 @@ fun createSseListener(
                 try {
                     val event = sseJson.decodeFromString<EventDto>(data)
                     onEvent(event)
-                } catch (_: Exception) { }
+                } catch (e: Exception) {
+                    Timber.e(e, "Failed to parse SSE event: %s", data)
+                }
             }
         }
 
