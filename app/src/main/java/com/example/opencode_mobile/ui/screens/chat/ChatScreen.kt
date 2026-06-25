@@ -33,6 +33,7 @@ import com.example.opencode_mobile.ui.theme.*
 import ru.wertik.orca.compose.Orca
 import ru.wertik.orca.compose.OrcaRootLayout
 import ru.wertik.orca.compose.OrcaSecurityPolicies
+import ru.wertik.orca.compose.OrcaStyle
 import ru.wertik.orca.compose.material3.rememberOrcaMaterialStyle
 import ru.wertik.orca.core.OrcaMarkdownParser
 
@@ -144,6 +145,7 @@ fun ChatScreen(
                     }
                 }
 
+                val orcaStyle = rememberOrcaMaterialStyle()
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -158,11 +160,13 @@ fun ChatScreen(
                             is DisplayMessage.User -> UserMessageBubble(item.text)
                             is DisplayMessage.Agent -> AgentMessageContent(
                                 message = item.message,
-                                isLast = item == allMessages.firstOrNull()
+                                isLast = item == allMessages.firstOrNull(),
+                                orcaStyle = orcaStyle
                             )
                             is DisplayMessage.Streaming -> StreamingContent(
                                 parts = item.parts,
-                                text = item.text
+                                text = item.text,
+                                orcaStyle = orcaStyle
                             )
                         }
                     }
@@ -198,9 +202,9 @@ private fun UserMessageBubble(text: String) {
 @Composable
 private fun AgentMessageContent(
     message: MessageWithPartsDto,
-    isLast: Boolean
+    isLast: Boolean,
+    orcaStyle: OrcaStyle
 ) {
-    val orcaStyle = rememberOrcaMaterialStyle()
     val orcaParser = remember { OrcaMarkdownParser() }
     Column(
         modifier = Modifier
@@ -234,9 +238,9 @@ private fun AgentMessageContent(
 @Composable
 private fun StreamingContent(
     parts: List<PartDto>,
-    text: String
+    text: String,
+    orcaStyle: OrcaStyle
 ) {
-    val orcaStyle = rememberOrcaMaterialStyle()
     val orcaParser = remember { OrcaMarkdownParser() }
     Column(
         modifier = Modifier

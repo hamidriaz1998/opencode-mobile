@@ -14,7 +14,7 @@ The following items from the original report were fixed across 2 commits:
 | `fef65c8` | quick wins: dead code removal, formatTimestamp extraction, SSE Json lift, logging fix | S1, O1, O2, D1-D5, C6 |
 | `db53762` | migrate hardcoded hex colors to MaterialTheme.colorScheme and Color.kt constants | C1, D6 |
 | `03a77f6` | add Orca Markdown renderer (wertikolix/orca 0.13.0) replacing CodeBadgeText | Phase 3.1 (extra) |
-| `03a77f6+` | C2/C4/C5/C8 fixes | C2, C4, C5, C8 |
+| `03a77f6+` | C2/C4/C5/C8/C9 fixes | C2, C4, C5, C8, C9 |
 
 Full details in the "Fixed Since Last Report" table in Section 6 below.
 
@@ -123,7 +123,7 @@ Full details in the "Fixed Since Last Report" table in Section 6 below.
 | **C6** | **`network_security_config.xml` defined but not referenced** in manifest | ~~`res/xml/network_security_config.xml`~~ | ✅ Deleted (unused, cleartext flag used instead) |
 | **C7** | **No explicit Content-Type** on SSE request | `OpencodeApiService.kt:934` | Already has `Accept`, which is likely sufficient — minor |
 | **C8** | **`HomeScreen.kt:131` — `CardDefaults.outlinedCardBorder()` ignored** — `border` param not supported by `Card(onClick=...)` overload | `HomeScreen.kt:131-133` | ✅ Fixed — removed unused `.copy()` expression |
-| **C9** | **`rememberOrcaMaterialStyle()` called inside both `AgentMessageContent` and `StreamingContent`** — creates two instances per render | `ChatScreen.kt:203,239` | Could be lifted to `ChatScreen` scope and passed down |
+| **C9** | **`rememberOrcaMaterialStyle()` called inside both `AgentMessageContent` and `StreamingContent`** — creates two instances per render | `ChatScreen.kt:203,239` | ✅ Fixed — lifted to `ChatScreen` scope, passed as parameter |
 
 ---
 
@@ -137,7 +137,7 @@ Full details in the "Fixed Since Last Report" table in Section 6 below.
 | Security issues | 5 | 1 ✅ (S1) |
 | Optimization opportunities | 9 | 2 ✅ (O1, O2) |
 | Dead/unused code items | 6 | 6 ✅ (D1-D6) |
-| Cleanup/best-practice items | 9 | 6 ✅ (C1, C2, C4, C5, C6, C8) |
+| Cleanup/best-practice items | 9 | 7 ✅ (C1, C2, C4, C5, C6, C8, C9) |
 
 ### Fixed Since Last Report
 
@@ -154,6 +154,7 @@ Full details in the "Fixed Since Last Report" table in Section 6 below.
 | C4 | All silent `catch (_: Exception)` now log via `Timber.e()` in ConnectionStore, OpencodeApiService, ChatViewModel | (pending commit) |
 | C5 | Replaced `BasicTextField` with `OutlinedTextField` in SearchBar | (pending commit) |
 | C8 | Removed unused `CardDefaults.outlinedCardBorder().copy()` in HomeScreen | (pending commit) |
+| C9 | Lifted `rememberOrcaMaterialStyle()` to `ChatScreen` scope, passed as parameter to `AgentMessageContent` and `StreamingContent` | (pending commit) |
 
 ### Remaining Quick Wins (highest impact, least effort)
 
