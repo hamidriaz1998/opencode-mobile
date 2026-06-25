@@ -78,4 +78,8 @@ dependencies {
 
     // Lifecycle Runtime Compose
     implementation(libs.lifecycle.runtime.compose)
+
+    // Orca Markdown
+    implementation(libs.orca.compose)
+    implementation(libs.orca.compose.material3)
 }

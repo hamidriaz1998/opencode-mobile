@@ -26,11 +26,15 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.opencode_mobile.data.api.MessageWithPartsDto
 import com.example.opencode_mobile.data.api.PartDto
-import com.example.opencode_mobile.ui.components.CodeBadgeText
 import com.example.opencode_mobile.ui.components.CommandWidget
 import com.example.opencode_mobile.ui.components.DiffCard
 import com.example.opencode_mobile.ui.components.DiffLine
 import com.example.opencode_mobile.ui.components.DiffLineType
+import ru.wertik.orca.compose.Orca
+import ru.wertik.orca.compose.OrcaRootLayout
+import ru.wertik.orca.compose.OrcaSecurityPolicies
+import ru.wertik.orca.compose.material3.rememberOrcaMaterialStyle
+import ru.wertik.orca.core.OrcaMarkdownParser
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -196,6 +200,8 @@ private fun AgentMessageContent(
     message: MessageWithPartsDto,
     isLast: Boolean
 ) {
+    val orcaStyle = rememberOrcaMaterialStyle()
+    val orcaParser = remember { OrcaMarkdownParser() }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -206,9 +212,14 @@ private fun AgentMessageContent(
                 "text" -> {
                     val text = part.text ?: return@forEach
                     if (text.isNotBlank()) {
-                        CodeBadgeText(
-                            text = text,
-                            modifier = Modifier.padding(vertical = 4.dp)
+                        Orca(
+                            markdown = text,
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            parser = orcaParser,
+                            parseCacheKey = part.id,
+                            style = orcaStyle,
+                            rootLayout = OrcaRootLayout.COLUMN,
+                            securityPolicy = OrcaSecurityPolicies.Default,
                         )
                     }
                 }
@@ -225,6 +236,8 @@ private fun StreamingContent(
     parts: List<PartDto>,
     text: String
 ) {
+    val orcaStyle = rememberOrcaMaterialStyle()
+    val orcaParser = remember { OrcaMarkdownParser() }
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -235,9 +248,14 @@ private fun StreamingContent(
                 "text" -> {
                     val partText = part.text ?: ""
                     if (partText.isNotBlank()) {
-                        CodeBadgeText(
-                            text = partText,
-                            modifier = Modifier.padding(vertical = 4.dp)
+                        Orca(
+                            markdown = partText,
+                            modifier = Modifier.padding(vertical = 4.dp),
+                            parser = orcaParser,
+                            parseCacheKey = "stream-${part.id}",
+                            style = orcaStyle,
+                            rootLayout = OrcaRootLayout.COLUMN,
+                            securityPolicy = OrcaSecurityPolicies.Default,
                         )
                     }
                 }
@@ -247,9 +265,14 @@ private fun StreamingContent(
             }
         }
         if (text.isNotBlank()) {
-            CodeBadgeText(
-                text = text,
-                modifier = Modifier.padding(vertical = 4.dp)
+            Orca(
+                markdown = text,
+                modifier = Modifier.padding(vertical = 4.dp),
+                parser = orcaParser,
+                parseCacheKey = "stream-text",
+                style = orcaStyle,
+                rootLayout = OrcaRootLayout.COLUMN,
+                securityPolicy = OrcaSecurityPolicies.Default,
             )
         }
         if (parts.isEmpty() && text.isBlank()) {
