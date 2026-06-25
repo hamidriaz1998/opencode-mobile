@@ -16,6 +16,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import androidx.compose.foundation.BorderStroke
+import com.example.opencode_mobile.ui.theme.*
 
 enum class DiffLineType {
     Normal, Addition, Deletion
@@ -54,9 +56,9 @@ fun DiffCard(
 
     Card(
         modifier = modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF141110)), // Level 1 Cards surface color
+        colors = CardDefaults.cardColors(containerColor = CardBg), // Level 1 Cards surface color
         shape = RoundedCornerShape(16.dp),
-        border = BorderStroke(1.dp, Color(0xFF2B2726)) // 1px border #2b2726
+        border = BorderStroke(1.dp, Divider) // 1px border #2b2726
     ) {
         Column {
             // Header Row
@@ -70,13 +72,13 @@ fun DiffCard(
                 Icon(
                     imageVector = if (expanded) Icons.Default.KeyboardArrowDown else Icons.Default.KeyboardArrowRight,
                     contentDescription = "Expand/Collapse",
-                    tint = Color(0xFF998D97) // outline color
+                    tint = MaterialTheme.colorScheme.outline // outline color
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 
                 Text(
                     text = fileName,
-                    color = Color(0xFFE9E1DF), // on-surface color
+                    color = MaterialTheme.colorScheme.onSurface, // on-surface color
                     fontFamily = FontFamily.Monospace,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -85,14 +87,14 @@ fun DiffCard(
 
                 Text(
                     text = "+$additions",
-                    color = Color(0xFF4CAF50), // Green for additions
+                    color = SuccessGreen, // Green for additions
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "-$deletions",
-                    color = Color(0xFFF44336), // Red for deletions
+                    color = ErrorRed, // Red for deletions
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold
                 )
@@ -100,49 +102,49 @@ fun DiffCard(
 
             // Expanded Diff Code Details
             if (expanded) {
-                HorizontalDivider(color = Color(0xFF2B2726))
+                HorizontalDivider(color = Divider)
 
                 // Show unchanged lines button
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFF100E0D)) // lowest container surface background
+                        .background(MaterialTheme.colorScheme.surfaceContainerLowest) // lowest container surface background
                         .padding(vertical = 8.dp),
                     horizontalArrangement = androidx.compose.foundation.layout.Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         text = "Show unchanged lines (3)",
-                        color = Color(0xFF998D97), // outline color
+                        color = MaterialTheme.colorScheme.outline, // outline color
                         fontSize = 12.sp
                     )
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = null,
-                        tint = Color(0xFF998D97),
+                        tint = MaterialTheme.colorScheme.outline,
                         modifier = Modifier.padding(start = 4.dp)
                     )
                 }
 
-                HorizontalDivider(color = Color(0xFF2B2726))
+                HorizontalDivider(color = Divider)
 
                 // Diff lines
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color(0xFF100E0D))
+                        .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                 ) {
                     diffLines.forEach { line ->
                         val backgroundColor = when (line.type) {
-                            DiffLineType.Addition -> Color(0xFF162C16) // Dark green
-                            DiffLineType.Deletion -> Color(0xFF2C1616) // Dark red
+                            DiffLineType.Addition -> DiffAddBg // Dark green
+                            DiffLineType.Deletion -> DiffDelBg // Dark red
                             DiffLineType.Normal -> Color.Transparent
                         }
                         
                         val textColor = when (line.type) {
-                            DiffLineType.Addition -> Color(0xFF81C784) // Light green
-                            DiffLineType.Deletion -> Color(0xFFE57373) // Light red
-                            DiffLineType.Normal -> Color(0xFFE9E1DF) // on-surface color
+                            DiffLineType.Addition -> DiffAddText // Light green
+                            DiffLineType.Deletion -> DiffDelText // Light red
+                            DiffLineType.Normal -> MaterialTheme.colorScheme.onSurface // on-surface color
                         }
 
                         Text(

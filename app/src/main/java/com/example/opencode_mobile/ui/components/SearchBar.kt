@@ -16,6 +16,7 @@ import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.opencode_mobile.ui.theme.*
 
 @Composable
 fun SearchBar(
@@ -51,14 +53,14 @@ fun SearchBar(
             modifier = Modifier
                 .weight(1f)
                 .height(48.dp)
-                .background(Color(0xFF2B2726), RoundedCornerShape(8.dp))
+                .background(Divider, RoundedCornerShape(8.dp))
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = "Search Icon",
-                tint = Color(0xFF998D97),
+                tint = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.padding(end = 8.dp)
             )
 
@@ -66,7 +68,7 @@ fun SearchBar(
                 if (text.isEmpty()) {
                     Text(
                         text = placeholder,
-                        color = Color(0xFF998D97),
+                        color = MaterialTheme.colorScheme.outline,
                         fontSize = 16.sp
                     )
                 }
@@ -76,8 +78,8 @@ fun SearchBar(
                         text = it
                         onQueryChange(it)
                     },
-                    textStyle = TextStyle(color = Color(0xFFE9E1DF), fontSize = 16.sp),
-                    cursorBrush = SolidColor(Color(0xFFEDB2F1)),
+                    textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 16.sp),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -88,7 +90,7 @@ fun SearchBar(
         Box(
             modifier = Modifier
                 .height(48.dp)
-                .background(Color(0xFF383433), RoundedCornerShape(8.dp))
+                .background(MaterialTheme.colorScheme.surfaceContainerHighest, RoundedCornerShape(8.dp))
                 .clickable { onSortToggle() }
                 .padding(horizontal = 20.dp),
             contentAlignment = Alignment.Center
@@ -96,7 +98,7 @@ fun SearchBar(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = if (sortAscending) "Oldest" else "Recent",
-                    color = Color(0xFFE9E1DF),
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontFamily = FontFamily.Monospace,
                     fontSize = 14.sp
                 )
@@ -105,7 +107,7 @@ fun SearchBar(
                     imageVector = if (sortAscending) Icons.AutoMirrored.Filled.KeyboardArrowRight
                     else Icons.Default.KeyboardArrowDown,
                     contentDescription = "Sort order",
-                    tint = Color(0xFFE9E1DF),
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.padding(top = 2.dp)
                 )
             }

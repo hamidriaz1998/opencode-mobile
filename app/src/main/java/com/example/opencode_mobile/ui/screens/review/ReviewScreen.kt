@@ -21,6 +21,7 @@ import com.example.opencode_mobile.data.api.FileDiffDto
 import com.example.opencode_mobile.ui.components.DiffCard
 import com.example.opencode_mobile.ui.components.DiffLine
 import com.example.opencode_mobile.ui.components.DiffLineType
+import com.example.opencode_mobile.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,12 +46,12 @@ fun ReviewScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF0F0E0D),
+                    containerColor = TopBarBg,
                     titleContentColor = Color.White
                 )
             )
         },
-        containerColor = Color(0xFF161312)
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         when {
             uiState.isLoading -> {
@@ -58,7 +59,7 @@ fun ReviewScreen(
                     Modifier.fillMaxSize().padding(innerPadding),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator(color = Color(0xFFEDB2F1))
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             }
             uiState.error != null -> {
@@ -67,10 +68,10 @@ fun ReviewScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(uiState.error ?: "", color = Color(0xFFF44336), fontSize = 14.sp)
+                        Text(uiState.error ?: "", color = ErrorRed, fontSize = 14.sp)
                         Spacer(Modifier.height(12.dp))
                         IconButton(onClick = { viewModel.loadDiff(sessionId) }) {
-                            Icon(Icons.Default.Refresh, "Retry", tint = Color(0xFFEDB2F1))
+                            Icon(Icons.Default.Refresh, "Retry", tint = MaterialTheme.colorScheme.primary)
                         }
                     }
                 }
@@ -84,11 +85,11 @@ fun ReviewScreen(
                         Icon(
                             Icons.Default.CheckCircle,
                             contentDescription = null,
-                            tint = Color(0xFF4CAF50),
+                            tint = SuccessGreen,
                             modifier = Modifier.size(48.dp)
                         )
                         Spacer(Modifier.height(12.dp))
-                        Text("No changes to review", color = Color(0xFF998D97), fontSize = 16.sp)
+                        Text("No changes to review", color = MaterialTheme.colorScheme.outline, fontSize = 16.sp)
                     }
                 }
             }
@@ -105,7 +106,7 @@ fun ReviewScreen(
                     item {
                         Text(
                             text = "Review Changes",
-                            color = Color(0xFFE9E1DF),
+                            color = MaterialTheme.colorScheme.onSurface,
                             fontSize = 32.sp,
                             fontWeight = FontWeight.Light
                         )
@@ -118,33 +119,33 @@ fun ReviewScreen(
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Text(
                                     text = "${uiState.diffs.size} file${if (uiState.diffs.size != 1) "s" else ""} changed",
-                                    color = Color(0xFF998D97),
+                                    color = MaterialTheme.colorScheme.outline,
                                     fontSize = 15.sp
                                 )
                                 Spacer(Modifier.width(8.dp))
                                 Text(
                                     text = "+$totalAdditions",
-                                    color = Color(0xFF4CAF50),
+                                    color = SuccessGreen,
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Spacer(Modifier.width(6.dp))
                                 Text(
                                     text = "-$totalDeletions",
-                                    color = Color(0xFFF44336),
+                                    color = ErrorRed,
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
                             Text(
                                 text = if (allCollapsed) "Expand all" else "Collapse all",
-                                color = Color(0xFF998D97),
+                                color = MaterialTheme.colorScheme.outline,
                                 fontSize = 15.sp,
                                 modifier = Modifier.clickable { allCollapsed = !allCollapsed }
                             )
                         }
                         Spacer(Modifier.height(8.dp))
-                        HorizontalDivider(color = Color(0xFF2B2726))
+                        HorizontalDivider(color = Divider)
                         Spacer(Modifier.height(8.dp))
                     }
 

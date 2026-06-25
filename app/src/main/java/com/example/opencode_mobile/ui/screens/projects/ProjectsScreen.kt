@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.opencode_mobile.data.api.ProjectDto
 import com.example.opencode_mobile.ui.components.SearchBar
+import com.example.opencode_mobile.ui.theme.*
 import com.example.opencode_mobile.util.formatTimestamp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -44,12 +45,12 @@ fun ProjectsScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF0F0E0D),
+                    containerColor = TopBarBg,
                     titleContentColor = Color.White
                 )
             )
         },
-        containerColor = Color(0xFF161312)
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -69,7 +70,7 @@ fun ProjectsScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator(color = Color(0xFFEDB2F1))
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     }
                 }
                 uiState.error != null -> {
@@ -80,12 +81,12 @@ fun ProjectsScreen(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = uiState.error ?: "Unknown error",
-                                color = Color(0xFFF44336),
+                                color = ErrorRed,
                                 fontSize = 14.sp
                             )
                             Spacer(Modifier.height(12.dp))
                             IconButton(onClick = { viewModel.loadProjects() }) {
-                                Icon(Icons.Default.Refresh, "Retry", tint = Color(0xFFEDB2F1))
+                                Icon(Icons.Default.Refresh, "Retry", tint = MaterialTheme.colorScheme.primary)
                             }
                         }
                     }
@@ -97,7 +98,7 @@ fun ProjectsScreen(
                     ) {
                         Text(
                             text = if (uiState.searchQuery.isNotBlank()) "No matching projects" else "No projects found",
-                            color = Color(0xFF998D97),
+                            color = MaterialTheme.colorScheme.outline,
                             fontSize = 16.sp
                         )
                     }
@@ -127,7 +128,7 @@ private fun ProjectCard(
 ) {
     Card(
         onClick = onClick,
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF141110)),
+        colors = CardDefaults.cardColors(containerColor = CardBg),
         shape = RoundedCornerShape(16.dp)
     ) {
         Row(
@@ -140,14 +141,14 @@ private fun ProjectCard(
                 Text(
                     text = project.worktree.substringAfterLast("/")
                         .ifEmpty { project.worktree },
-                    color = Color(0xFFE9E1DF),
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 16.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = project.worktree,
-                    color = Color(0xFF998D97),
+                    color = MaterialTheme.colorScheme.outline,
                     fontSize = 13.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -155,7 +156,7 @@ private fun ProjectCard(
                 val timestamp = project.time.updated ?: project.time.created
                 Text(
                     text = formatTimestamp(timestamp),
-                    color = Color(0xFF6B646A),
+                    color = SubduedText,
                     fontSize = 12.sp
                 )
             }

@@ -29,6 +29,7 @@ import com.example.opencode_mobile.data.api.PartDto
 import com.example.opencode_mobile.ui.components.DiffCard
 import com.example.opencode_mobile.ui.components.DiffLine
 import com.example.opencode_mobile.ui.components.DiffLineType
+import com.example.opencode_mobile.ui.theme.*
 import ru.wertik.orca.compose.Orca
 import ru.wertik.orca.compose.OrcaRootLayout
 import ru.wertik.orca.compose.OrcaSecurityPolicies
@@ -68,15 +69,15 @@ fun ChatScreen(
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = Color.White)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = MaterialTheme.colorScheme.onSurface)
                     }
                 },
                 actions = {
                     Button(
                         onClick = onReviewClick,
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFFEDB2F1),
-                            contentColor = Color(0xFF64336C)
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.secondaryContainer
                         ),
                         shape = RoundedCornerShape(100.dp),
                         modifier = Modifier.padding(end = 4.dp)
@@ -84,12 +85,12 @@ fun ChatScreen(
                         Text("Review", fontSize = 14.sp)
                     }
                     IconButton(onClick = { }) {
-                        Icon(Icons.Default.MoreVert, "More options", tint = Color.White)
+                        Icon(Icons.Default.MoreVert, "More options", tint = MaterialTheme.colorScheme.onSurface)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF0F0E0D),
-                    titleContentColor = Color.White
+                    containerColor = TopBarBg,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         },
@@ -101,21 +102,21 @@ fun ChatScreen(
                 onSend = { viewModel.sendMessage(it) }
             )
         },
-        containerColor = Color(0xFF161312)
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         when {
             uiState.isLoading -> {
                 Box(Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(color = Color(0xFFEDB2F1))
+                    CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                 }
             }
             uiState.error != null && uiState.messages.isEmpty() -> {
                 Box(Modifier.fillMaxSize().padding(innerPadding), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(uiState.error ?: "", color = Color(0xFFF44336), fontSize = 14.sp)
+                        Text(uiState.error ?: "", color = ErrorRed, fontSize = 14.sp)
                         Spacer(Modifier.height(12.dp))
                         IconButton(onClick = { viewModel.retry() }) {
-                            Icon(Icons.Default.Refresh, "Retry", tint = Color(0xFFEDB2F1))
+                            Icon(Icons.Default.Refresh, "Retry", tint = MaterialTheme.colorScheme.primary)
                         }
                     }
                 }
@@ -182,12 +183,12 @@ private fun UserMessageBubble(text: String) {
         Box(
             modifier = Modifier
                 .widthIn(max = 320.dp)
-                .background(Color(0xFF2D1F2E), RoundedCornerShape(16.dp, 16.dp, 4.dp, 16.dp))
+                .background(UserBubbleBg, RoundedCornerShape(16.dp, 16.dp, 4.dp, 16.dp))
                 .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
             Text(
                 text = text,
-                color = Color(0xFFE9E1DF),
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 15.sp
             )
         }
@@ -277,7 +278,7 @@ private fun StreamingContent(
         if (parts.isEmpty() && text.isBlank()) {
             Text(
                 text = "▊",
-                color = Color(0xFFEDB2F1),
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 15.sp,
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp)
             )
@@ -299,7 +300,7 @@ private fun ToolPartCard(part: PartDto) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF141110)),
+        colors = CardDefaults.cardColors(containerColor = CardBg),
         shape = RoundedCornerShape(12.dp)
     ) {
         Row(
@@ -317,16 +318,16 @@ private fun ToolPartCard(part: PartDto) {
                 },
                 contentDescription = null,
                 tint = when (status) {
-                    "complete", "success" -> Color(0xFF4CAF50)
-                    "error", "failed" -> Color(0xFFF44336)
-                    else -> Color(0xFFEDB2F1)
+                    "complete", "success" -> SuccessGreen
+                    "error", "failed" -> ErrorRed
+                    else -> MaterialTheme.colorScheme.primary
                 },
                 modifier = Modifier.size(18.dp)
             )
             Spacer(Modifier.width(10.dp))
             Text(
                 text = commandText,
-                color = Color(0xFFE9E1DF),
+                color = MaterialTheme.colorScheme.onSurface,
                 fontFamily = FontFamily.Monospace,
                 fontSize = 13.sp,
                 modifier = Modifier.weight(1f),
@@ -336,20 +337,20 @@ private fun ToolPartCard(part: PartDto) {
             Icon(
                 imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                 contentDescription = "Toggle",
-                tint = Color(0xFF998D97),
+                tint = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.size(18.dp)
             )
         }
         if (expanded && output.isNotBlank()) {
-            HorizontalDivider(color = Color(0xFF2B2726))
+            HorizontalDivider(color = Divider)
             Text(
                 text = output,
-                color = Color(0xFF998D97),
+                color = MaterialTheme.colorScheme.outline,
                 fontFamily = FontFamily.Monospace,
                 fontSize = 12.sp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF100E0D))
+                    .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                     .padding(horizontal = 16.dp, vertical = 10.dp)
             )
         }
@@ -388,7 +389,7 @@ private fun ReasoningPartCard(part: PartDto) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF141110)),
+        colors = CardDefaults.cardColors(containerColor = CardBg),
         shape = RoundedCornerShape(12.dp)
     ) {
         Row(
@@ -401,13 +402,13 @@ private fun ReasoningPartCard(part: PartDto) {
             Icon(
                 imageVector = Icons.Default.Psychology,
                 contentDescription = null,
-                tint = Color(0xFF998D97),
+                tint = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.size(18.dp)
             )
             Spacer(Modifier.width(8.dp))
             Text(
                 text = if (expanded) "Reasoning" else "Reasoning...",
-                color = Color(0xFF998D97),
+                color = MaterialTheme.colorScheme.outline,
                 fontSize = 13.sp,
                 fontWeight = FontWeight.Medium,
                 modifier = Modifier.weight(1f)
@@ -415,19 +416,19 @@ private fun ReasoningPartCard(part: PartDto) {
             Icon(
                 imageVector = if (expanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                 contentDescription = "Toggle",
-                tint = Color(0xFF998D97),
+                tint = MaterialTheme.colorScheme.outline,
                 modifier = Modifier.size(18.dp)
             )
         }
         if (expanded && reasonText.isNotBlank()) {
-            HorizontalDivider(color = Color(0xFF2B2726))
+            HorizontalDivider(color = Divider)
             Text(
                 text = reasonText,
-                color = Color(0xFF6B646A),
+                color = SubduedText,
                 fontSize = 13.sp,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFF100E0D))
+                    .background(MaterialTheme.colorScheme.surfaceContainerLowest)
                     .padding(horizontal = 16.dp, vertical = 10.dp)
             )
         }
@@ -444,21 +445,21 @@ private fun ChatInputBar(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFF0F0E0D))
+            .background(TopBarBg)
             .padding(16.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(Color(0xFF161413), RoundedCornerShape(12.dp))
+                .background(ToolSurface, RoundedCornerShape(12.dp))
                 .padding(horizontal = 16.dp, vertical = 2.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             TextField(
                 value = text,
                 onValueChange = onTextChange,
-                placeholder = { Text("Type a message...", color = Color(0xFF8A8886)) },
-                textStyle = TextStyle(color = Color(0xFFE9E1DF), fontSize = 16.sp),
+                placeholder = { Text("Type a message...", color = PlaceholderText) },
+                textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface, fontSize = 16.sp),
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
@@ -479,17 +480,17 @@ private fun ChatInputBar(
         ) {
             Row(
                 modifier = Modifier
-                    .background(Color(0xFF1E1C1A), RoundedCornerShape(16.dp))
+                    .background(InputContainerBg, RoundedCornerShape(16.dp))
                     .clickable { }
                     .padding(horizontal = 16.dp, vertical = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Agent", color = Color.White, fontSize = 14.sp)
+                Text("Agent", color = MaterialTheme.colorScheme.onSurface, fontSize = 14.sp)
                 Spacer(Modifier.width(4.dp))
                 Icon(
                     Icons.Default.KeyboardArrowDown,
                     contentDescription = null,
-                    tint = Color.White,
+                    tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(16.dp)
                 )
             }
@@ -500,13 +501,13 @@ private fun ChatInputBar(
                 modifier = Modifier
                     .size(44.dp)
                     .clip(CircleShape)
-                    .background(if (isSending) Color(0xFF998D97) else Color(0xFF262423))
+                    .background(if (isSending) MaterialTheme.colorScheme.outline else SendButtonBg)
                     .clickable(enabled = !isSending && text.isNotBlank()) { onSend(text) },
                 contentAlignment = Alignment.Center
             ) {
                 if (isSending) {
                     CircularProgressIndicator(
-                        color = Color(0xFFEDB2F1),
+                        color = MaterialTheme.colorScheme.primary,
                         strokeWidth = 3.dp,
                         modifier = Modifier.size(20.dp)
                     )
@@ -514,7 +515,7 @@ private fun ChatInputBar(
                     Icon(
                         Icons.Default.ArrowUpward,
                         contentDescription = "Send",
-                        tint = Color(0xFFC7C5C3)
+                        tint = SendIconTint
                     )
                 }
             }

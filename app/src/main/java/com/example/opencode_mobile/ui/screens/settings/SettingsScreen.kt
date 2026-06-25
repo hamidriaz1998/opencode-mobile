@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.opencode_mobile.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -20,12 +21,12 @@ fun SettingsScreen(
             TopAppBar(
                 title = { Text("Settings") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF0F0E0D),
+                    containerColor = TopBarBg,
                     titleContentColor = Color.White
                 )
             )
         },
-        containerColor = Color(0xFF161312)
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -37,7 +38,7 @@ fun SettingsScreen(
             SettingsSection("Server") {
                 Text(
                     text = "Connect to an opencode server\nfrom the Home tab.",
-                    color = Color(0xFF998D97),
+                    color = MaterialTheme.colorScheme.outline,
                     fontSize = 14.sp
                 )
             }
@@ -45,7 +46,7 @@ fun SettingsScreen(
             SettingsSection("Appearance") {
                 Text(
                     text = "Dark theme only (for now).",
-                    color = Color(0xFF998D97),
+                    color = MaterialTheme.colorScheme.outline,
                     fontSize = 14.sp
                 )
             }
@@ -53,12 +54,12 @@ fun SettingsScreen(
             SettingsSection("About") {
                 Text(
                     text = "OpenCode Mobile v1.0.0",
-                    color = Color(0xFFE9E1DF),
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 14.sp
                 )
                 Text(
                     text = "Mobile client for opencode coding agent.",
-                    color = Color(0xFF998D97),
+                    color = MaterialTheme.colorScheme.outline,
                     fontSize = 12.sp
                 )
             }
@@ -69,7 +70,7 @@ fun SettingsScreen(
 @Composable
 private fun SettingsSection(title: String, content: @Composable ColumnScope.() -> Unit) {
     Card(
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF141110)),
+        colors = CardDefaults.cardColors(containerColor = CardBg),
         shape = RoundedCornerShape(16.dp)
     ) {
         Column(
@@ -80,7 +81,7 @@ private fun SettingsSection(title: String, content: @Composable ColumnScope.() -
         ) {
             Text(
                 text = title,
-                color = Color(0xFFEDB2F1),
+                color = MaterialTheme.colorScheme.primary,
                 fontSize = 14.sp
             )
             content()

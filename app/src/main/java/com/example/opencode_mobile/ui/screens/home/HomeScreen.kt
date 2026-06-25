@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.opencode_mobile.data.local.Connection
+import com.example.opencode_mobile.ui.theme.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,22 +38,22 @@ fun HomeScreen(
             TopAppBar(
                 title = { Text("Connections") },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF0F0E0D),
-                    titleContentColor = Color.White
+                    containerColor = TopBarBg,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showAddDialog = true },
-                containerColor = Color(0xFFEDB2F1),
-                contentColor = Color(0xFF64336C),
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.secondaryContainer,
                 shape = RoundedCornerShape(100.dp)
             ) {
                 Icon(Icons.Default.Add, contentDescription = "Add Connection")
             }
         },
-        containerColor = Color(0xFF161312)
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         if (uiState.connections.isEmpty()) {
             Box(
@@ -63,7 +64,7 @@ fun HomeScreen(
             ) {
                 Text(
                     text = "No connections yet.\nTap + to add a server.",
-                    color = Color(0xFF998D97),
+                    color = MaterialTheme.colorScheme.outline,
                     fontSize = 16.sp
                 )
             }
@@ -125,7 +126,7 @@ private fun ConnectionCard(
     Card(
         onClick = onClick,
         colors = CardDefaults.cardColors(
-            containerColor = if (isActive) Color(0xFF221F1E) else Color(0xFF141110)
+            containerColor = if (isActive) MaterialTheme.colorScheme.surfaceContainer else CardBg
         ),
         shape = RoundedCornerShape(16.dp),
         border = CardDefaults.outlinedCardBorder().copy(
@@ -141,34 +142,34 @@ private fun ConnectionCard(
             Icon(
                 imageVector = Icons.Default.Cable,
                 contentDescription = null,
-                tint = if (isActive) Color(0xFFEDB2F1) else Color(0xFF998D97),
+                tint = if (isActive) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline,
                 modifier = Modifier.size(32.dp)
             )
             Spacer(Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = connection.name.ifBlank { "${connection.address}:${connection.port}" },
-                    color = Color(0xFFE9E1DF),
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 16.sp
                 )
                 Text(
                     text = "${connection.address}:${connection.port}",
-                    color = Color(0xFF998D97),
+                    color = MaterialTheme.colorScheme.outline,
                     fontSize = 13.sp
                 )
                 if (isActive) {
                     Text(
                         text = "Connected",
-                        color = Color(0xFF4CAF50),
+                        color = SuccessGreen,
                         fontSize = 12.sp
                     )
                 }
             }
             IconButton(onClick = { onEdit(connection) }) {
-                Icon(Icons.Default.Edit, "Edit", tint = Color(0xFF998D97))
+                Icon(Icons.Default.Edit, "Edit", tint = MaterialTheme.colorScheme.outline)
             }
             IconButton(onClick = { onDelete(connection) }) {
-                Icon(Icons.Default.Delete, "Delete", tint = Color(0xFFF44336))
+                Icon(Icons.Default.Delete, "Delete", tint = ErrorRed)
             }
         }
     }
@@ -188,9 +189,9 @@ private fun ConnectionDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        containerColor = Color(0xFF2B2726),
+        containerColor = Divider,
         title = {
-            Text(title, color = Color.White)
+            Text(title, color = MaterialTheme.colorScheme.onSurface)
         },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -235,12 +236,12 @@ private fun ConnectionDialog(
                 },
                 enabled = address.isNotBlank()
             ) {
-                Text("Save", color = Color(0xFFEDB2F1))
+                Text("Save", color = MaterialTheme.colorScheme.primary)
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel", color = Color(0xFF998D97))
+                Text("Cancel", color = MaterialTheme.colorScheme.outline)
             }
         }
     )
@@ -248,13 +249,13 @@ private fun ConnectionDialog(
 
 @Composable
 private fun textFieldColors() = OutlinedTextFieldDefaults.colors(
-    focusedTextColor = Color(0xFFE9E1DF),
-    unfocusedTextColor = Color(0xFFE9E1DF),
-    cursorColor = Color(0xFFEDB2F1),
-    focusedBorderColor = Color(0xFFEDB2F1),
-    unfocusedBorderColor = Color(0xFF4D444D),
-    focusedLabelColor = Color(0xFFEDB2F1),
-    unfocusedLabelColor = Color(0xFF998D97),
-    focusedContainerColor = Color(0xFF1E1B1A),
-    unfocusedContainerColor = Color(0xFF1E1B1A)
+    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+    unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
+    cursorColor = MaterialTheme.colorScheme.primary,
+    focusedBorderColor = MaterialTheme.colorScheme.primary,
+    unfocusedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+    focusedLabelColor = MaterialTheme.colorScheme.primary,
+    unfocusedLabelColor = MaterialTheme.colorScheme.outline,
+    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerLow
 )

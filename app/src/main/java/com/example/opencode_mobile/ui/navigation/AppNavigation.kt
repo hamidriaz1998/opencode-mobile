@@ -32,6 +32,7 @@ import com.example.opencode_mobile.ui.screens.projects.ProjectsScreen
 import com.example.opencode_mobile.ui.screens.review.ReviewScreen
 import com.example.opencode_mobile.ui.screens.sessions.SessionsScreen
 import com.example.opencode_mobile.ui.screens.settings.SettingsScreen
+import com.example.opencode_mobile.ui.theme.*
 
 data class BottomNavItem(
     val label: String,
@@ -61,7 +62,7 @@ fun AppNavigation(
         bottomBar = {
             if (showBottomBar) {
                 NavigationBar(
-                    containerColor = Color(0xFF0F0E0D),
+                    containerColor = TopBarBg,
                     tonalElevation = 0.dp
                 ) {
                     bottomNavItems.forEach { item ->
@@ -79,18 +80,18 @@ fun AppNavigation(
                                 }
                             },
                             colors = NavigationBarItemDefaults.colors(
-                                selectedIconColor = Color(0xFFEDB2F1),
-                                selectedTextColor = Color(0xFFEDB2F1),
-                                unselectedIconColor = Color(0xFF998D97),
-                                unselectedTextColor = Color(0xFF998D97),
-                                indicatorColor = Color(0xFF383433)
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.primary,
+                                unselectedIconColor = MaterialTheme.colorScheme.outline,
+                                unselectedTextColor = MaterialTheme.colorScheme.outline,
+                                indicatorColor = MaterialTheme.colorScheme.surfaceContainerHighest
                             )
                         )
                     }
                 }
             }
         },
-        containerColor = Color(0xFF161312)
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         NavHost(
             navController = navController,

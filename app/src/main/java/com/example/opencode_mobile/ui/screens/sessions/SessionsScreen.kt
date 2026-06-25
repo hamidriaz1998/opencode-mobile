@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.opencode_mobile.data.api.SessionDto
 import com.example.opencode_mobile.ui.components.SearchBar
+import com.example.opencode_mobile.ui.theme.*
 import com.example.opencode_mobile.util.formatTimestamp
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,12 +53,12 @@ fun SessionsScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF0F0E0D),
+                    containerColor = TopBarBg,
                     titleContentColor = Color.White
                 )
             )
         },
-        containerColor = Color(0xFF161312)
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -77,7 +78,7 @@ fun SessionsScreen(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
-                        CircularProgressIndicator(color = Color(0xFFEDB2F1))
+                        CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
                     }
                 }
                 uiState.error != null -> {
@@ -88,12 +89,12 @@ fun SessionsScreen(
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Text(
                                 text = uiState.error ?: "Unknown error",
-                                color = Color(0xFFF44336),
+                                color = ErrorRed,
                                 fontSize = 14.sp
                             )
                             Spacer(Modifier.height(12.dp))
                             IconButton(onClick = { viewModel.loadSessions(projectWorktree) }) {
-                                Icon(Icons.Default.Refresh, "Retry", tint = Color(0xFFEDB2F1))
+                                Icon(Icons.Default.Refresh, "Retry", tint = MaterialTheme.colorScheme.primary)
                             }
                         }
                     }
@@ -106,7 +107,7 @@ fun SessionsScreen(
                         Text(
                             text = if (uiState.searchQuery.isNotBlank())
                                 "No matching sessions" else "No sessions found",
-                            color = Color(0xFF998D97),
+                            color = MaterialTheme.colorScheme.outline,
                             fontSize = 16.sp
                         )
                     }
@@ -136,7 +137,7 @@ private fun SessionCard(
 ) {
     Card(
         onClick = onClick,
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF141110)),
+        colors = CardDefaults.cardColors(containerColor = CardBg),
         shape = RoundedCornerShape(16.dp)
     ) {
         Row(
@@ -148,7 +149,7 @@ private fun SessionCard(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = session.title ?: session.slug ?: "Untitled session",
-                    color = Color(0xFFE9E1DF),
+                    color = MaterialTheme.colorScheme.onSurface,
                     fontSize = 16.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -156,13 +157,13 @@ private fun SessionCard(
                 Row {
                     Text(
                         text = session.agent ?: "unknown agent",
-                        color = Color(0xFF6B646A),
+                        color = SubduedText,
                         fontSize = 13.sp
                     )
                     if (session.model != null) {
                         Text(
                             text = " · ${session.model.id ?: ""}",
-                            color = Color(0xFF6B646A),
+                            color = SubduedText,
                             fontSize = 13.sp
                         )
                     }
@@ -170,7 +171,7 @@ private fun SessionCard(
                 val timestamp = session.time.updated ?: session.time.created
                 Text(
                     text = formatTimestamp(timestamp),
-                    color = Color(0xFF6B646A),
+                    color = SubduedText,
                     fontSize = 12.sp
                 )
             }
@@ -180,7 +181,7 @@ private fun SessionCard(
                 if (additions > 0 || deletions > 0) {
                     Text(
                         text = "+$additions -$deletions",
-                        color = Color(0xFF998D97),
+                        color = MaterialTheme.colorScheme.outline,
                         fontSize = 12.sp
                     )
                 }
