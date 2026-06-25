@@ -74,8 +74,8 @@ dependencies {
     // Kotlinx Serialization
     implementation(libs.kotlinx.serialization.json)
 
-    // DataStore
-    implementation(libs.datastore.preferences)
+    // Security
+    implementation(libs.security.crypto)
 
     // Lifecycle Runtime Compose
     implementation(libs.lifecycle.runtime.compose)

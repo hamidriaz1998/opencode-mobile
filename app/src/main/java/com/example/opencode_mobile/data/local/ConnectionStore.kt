@@ -1,21 +1,20 @@
 package com.example.opencode_mobile.data.local
 
 import android.content.Context
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
+import android.content.SharedPreferences
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKey
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
-import timber.log.Timber
-
-private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "connections")
 
 private val json = Json { ignoreUnknownKeys = true }
 
@@ -23,12 +22,50 @@ private val json = Json { ignoreUnknownKeys = true }
 class ConnectionStore @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    private val connectionsKey = stringPreferencesKey("connections")
-    private val activeConnectionIdKey = stringPreferencesKey("active_connection_id")
+    private val prefs: SharedPreferences by lazy {
+        val masterKey = MasterKey.Builder(context)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
+        EncryptedSharedPreferences.create(
+            context,
+            "connection_prefs",
+            masterKey,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
+    }
 
-    val connections: Flow<List<Connection>> = context.dataStore.data.map { prefs ->
-        val raw = prefs[connectionsKey] ?: "[]"
-        try {
+    private val _connections = MutableStateFlow<List<Connection>>(emptyList())
+    val connections: Flow<List<Connection>> = _connections.asStateFlow()
+
+    private val _activeConnectionId = MutableStateFlow<String?>(null)
+    val activeConnectionId: Flow<String?> = _activeConnectionId.asStateFlow()
+
+    private val _activeConnection = MutableStateFlow<Connection?>(null)
+    val activeConnection: Flow<Connection?> = _activeConnection.asStateFlow()
+
+    private val listener = SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+        when (key) {
+            CONNECTIONS_KEY -> _connections.value = readConnectionsSync()
+            ACTIVE_CONNECTION_ID_KEY -> {
+                val id = prefs.getString(ACTIVE_CONNECTION_ID_KEY, null)
+                _activeConnectionId.value = id
+                _activeConnection.value = _connections.value.find { it.id == id }
+            }
+        }
+    }
+
+    init {
+        prefs.registerOnSharedPreferenceChangeListener(listener)
+        _connections.value = readConnectionsSync()
+        val id = prefs.getString(ACTIVE_CONNECTION_ID_KEY, null)
+        _activeConnectionId.value = id
+        _activeConnection.value = _connections.value.find { it.id == id }
+    }
+
+    private fun readConnectionsSync(): List<Connection> {
+        val raw = prefs.getString(CONNECTIONS_KEY, "[]") ?: "[]"
+        return try {
             json.decodeFromString<List<Connection>>(raw)
         } catch (e: Exception) {
             Timber.e(e, "Failed to decode connections")
@@ -36,76 +73,48 @@ class ConnectionStore @Inject constructor(
         }
     }
 
-    val activeConnectionId: Flow<String?> = context.dataStore.data.map { prefs ->
-        prefs[activeConnectionIdKey]
-    }
-
-    val activeConnection: Flow<Connection?> = context.dataStore.data.map { prefs ->
-        val raw = prefs[connectionsKey] ?: "[]"
-        val id = prefs[activeConnectionIdKey]
-        try {
-            json.decodeFromString<List<Connection>>(raw).find { it.id == id }
-        } catch (e: Exception) {
-            Timber.e(e, "Failed to decode active connection")
-            null
-        }
-    }
-
     suspend fun addConnection(connection: Connection) {
-        context.dataStore.edit { prefs ->
-            val raw = prefs[connectionsKey] ?: "[]"
-            val list = try {
-                json.decodeFromString<List<Connection>>(raw).toMutableList()
-            } catch (e: Exception) {
-                Timber.e(e, "Failed to decode connections in addConnection")
-                mutableListOf()
-            }
+        withContext(Dispatchers.IO) {
+            val list = _connections.value.toMutableList()
             list.add(connection)
-            prefs[connectionsKey] = json.encodeToString(list)
+            prefs.edit().putString(CONNECTIONS_KEY, json.encodeToString(list)).apply()
         }
     }
 
     suspend fun updateConnection(connection: Connection) {
-        context.dataStore.edit { prefs ->
-            val raw = prefs[connectionsKey] ?: "[]"
-            val list = try {
-                json.decodeFromString<List<Connection>>(raw).toMutableList()
-            } catch (e: Exception) {
-                Timber.e(e, "Failed to decode connections in updateConnection")
-                mutableListOf()
-            }
+        withContext(Dispatchers.IO) {
+            val list = _connections.value.toMutableList()
             val index = list.indexOfFirst { it.id == connection.id }
             if (index >= 0) {
                 list[index] = connection
-                prefs[connectionsKey] = json.encodeToString(list)
+                prefs.edit().putString(CONNECTIONS_KEY, json.encodeToString(list)).apply()
             }
         }
     }
 
     suspend fun deleteConnection(id: String) {
-        context.dataStore.edit { prefs ->
-            val raw = prefs[connectionsKey] ?: "[]"
-            val list = try {
-                json.decodeFromString<List<Connection>>(raw).toMutableList()
-            } catch (e: Exception) {
-                Timber.e(e, "Failed to decode connections in deleteConnection")
-                mutableListOf()
-            }
+        withContext(Dispatchers.IO) {
+            val list = _connections.value.toMutableList()
             list.removeAll { it.id == id }
-            prefs[connectionsKey] = json.encodeToString(list)
-            if (prefs[activeConnectionIdKey] == id) {
-                prefs.remove(activeConnectionIdKey)
+            prefs.edit().putString(CONNECTIONS_KEY, json.encodeToString(list)).apply()
+            if (prefs.getString(ACTIVE_CONNECTION_ID_KEY, null) == id) {
+                prefs.edit().remove(ACTIVE_CONNECTION_ID_KEY).apply()
             }
         }
     }
 
     suspend fun setActiveConnection(id: String?) {
-        context.dataStore.edit { prefs ->
+        withContext(Dispatchers.IO) {
             if (id != null) {
-                prefs[activeConnectionIdKey] = id
+                prefs.edit().putString(ACTIVE_CONNECTION_ID_KEY, id).apply()
             } else {
-                prefs.remove(activeConnectionIdKey)
+                prefs.edit().remove(ACTIVE_CONNECTION_ID_KEY).apply()
             }
         }
+    }
+
+    companion object {
+        private const val CONNECTIONS_KEY = "connections"
+        private const val ACTIVE_CONNECTION_ID_KEY = "active_connection_id"
     }
 }

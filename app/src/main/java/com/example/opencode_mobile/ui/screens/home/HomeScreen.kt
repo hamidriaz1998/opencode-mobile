@@ -95,8 +95,8 @@ fun HomeScreen(
             title = "Add Connection",
             initial = null,
             onDismiss = { showAddDialog = false },
-            onSave = { name, address, port, password ->
-                viewModel.addConnection(name, address, port, password)
+            onSave = { name, address, port, password, useTls ->
+                viewModel.addConnection(name, address, port, password, useTls)
                 showAddDialog = false
             }
         )
@@ -107,8 +107,8 @@ fun HomeScreen(
             title = "Edit Connection",
             initial = conn,
             onDismiss = { editingConnection = null },
-            onSave = { name, address, port, password ->
-                viewModel.updateConnection(conn.id, name, address, port, password)
+            onSave = { name, address, port, password, useTls ->
+                viewModel.updateConnection(conn.id, name, address, port, password, useTls)
                 editingConnection = null
             }
         )
@@ -177,12 +177,13 @@ private fun ConnectionDialog(
     title: String,
     initial: Connection?,
     onDismiss: () -> Unit,
-    onSave: (name: String, address: String, port: Int, password: String) -> Unit
+    onSave: (name: String, address: String, port: Int, password: String, useTls: Boolean) -> Unit
 ) {
     var name by remember { mutableStateOf(initial?.name ?: "") }
     var address by remember { mutableStateOf(initial?.address ?: "") }
     var port by remember { mutableStateOf((initial?.port ?: 4096).toString()) }
     var password by remember { mutableStateOf(initial?.password ?: "") }
+    var useTls by remember { mutableStateOf(initial?.useTls ?: false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -221,6 +222,14 @@ private fun ConnectionDialog(
                     singleLine = true,
                     colors = textFieldColors()
                 )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Use HTTPS", color = MaterialTheme.colorScheme.onSurface)
+                    Switch(checked = useTls, onCheckedChange = { useTls = it })
+                }
             }
         },
         confirmButton = {
@@ -228,7 +237,7 @@ private fun ConnectionDialog(
                 onClick = {
                     if (address.isNotBlank()) {
                         val portNum = port.toIntOrNull() ?: 4096
-                        onSave(name, address, portNum, password)
+                        onSave(name, address, portNum, password, useTls)
                     }
                 },
                 enabled = address.isNotBlank()

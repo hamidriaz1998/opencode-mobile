@@ -43,20 +43,21 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun addConnection(name: String, address: String, port: Int, password: String) {
+    fun addConnection(name: String, address: String, port: Int, password: String, useTls: Boolean = false) {
         viewModelScope.launch {
             val connection = Connection(
                 id = UUID.randomUUID().toString(),
                 name = name.ifBlank { address },
                 address = address,
                 port = port,
-                password = password.ifBlank { null }
+                password = password.ifBlank { null },
+                useTls = useTls
             )
             connectionStore.addConnection(connection)
         }
     }
 
-    fun updateConnection(id: String, name: String, address: String, port: Int, password: String) {
+    fun updateConnection(id: String, name: String, address: String, port: Int, password: String, useTls: Boolean = false) {
         viewModelScope.launch {
             connectionStore.updateConnection(
                 Connection(
@@ -64,7 +65,8 @@ class HomeViewModel @Inject constructor(
                     name = name.ifBlank { address },
                     address = address,
                     port = port,
-                    password = password.ifBlank { null }
+                    password = password.ifBlank { null },
+                    useTls = useTls
                 )
             )
         }

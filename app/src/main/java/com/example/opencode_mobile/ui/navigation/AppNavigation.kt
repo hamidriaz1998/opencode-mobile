@@ -96,12 +96,12 @@ fun AppNavigation(
         NavHost(
             navController = navController,
             startDestination = Routes.HOME,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
         ) {
             composable(Routes.HOME) {
                 HomeScreen(
                     onConnect = { connection ->
-                        val baseUrl = "http://${connection.address}:${connection.port}"
+                        val baseUrl = "${connection.scheme}://${connection.address}:${connection.port}"
                         apiServiceProvider.init(baseUrl)
                         connectionManager.setConnection(connection)
                         navController.navigate(Routes.projects(connection.id))

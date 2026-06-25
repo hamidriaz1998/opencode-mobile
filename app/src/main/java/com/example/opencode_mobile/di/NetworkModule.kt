@@ -28,8 +28,9 @@ object NetworkModule {
         return Interceptor { chain ->
             val connection = connectionManager.activeConnection.value
             val request = chain.request().newBuilder().apply {
-                if (connection?.password != null && connection.password!!.isNotBlank()) {
-                    val credentials = "opencode:${connection.password}"
+                val pwd = connection?.password
+                if (!pwd.isNullOrBlank()) {
+                    val credentials = "opencode:$pwd"
                     val encoded = Base64.getEncoder().encodeToString(credentials.toByteArray())
                     addHeader("Authorization", "Basic $encoded")
                 }

@@ -19,6 +19,7 @@ datastore = "1.2.1"
 lifecycleRuntimeCompose = "2.8.7"
 orca = "0.13.0"
 timber = "5.0.1"
+securityCrypto = "1.1.0-alpha06"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -52,6 +53,7 @@ lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-ru
 orca-compose = { module = "ru.wertik:orca-compose", version.ref = "orca" }
 orca-compose-material3 = { module = "ru.wertik:orca-compose-material3", version.ref = "orca" }
 timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+security-crypto = { group = "androidx.security", name = "security-crypto", version.ref = "securityCrypto" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

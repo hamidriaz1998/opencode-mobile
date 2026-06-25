@@ -2,6 +2,7 @@ package com.example.opencode_mobile.data.api
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
 
 @Serializable
 data class HealthResponse(
@@ -96,7 +97,7 @@ data class MessageDto(
     val cost: Double? = null,
     val tokens: TokensDto? = null,
     val finish: String? = null,
-    val summary: kotlinx.serialization.json.JsonElement? = null,
+    val summary: JsonElement? = null,
     val error: ErrorDto? = null
 )
 
@@ -148,13 +149,13 @@ data class PartDto(
     val tokens: TokensDto? = null,
     val synthetic: Boolean? = null,
     val ignored: Boolean? = null,
-    val metadata: Map<String, kotlinx.serialization.json.JsonElement>? = null
+    val metadata: Map<String, JsonElement>? = null
 )
 
 @Serializable
 data class ToolStateDto(
     val status: String? = null,
-    val input: kotlinx.serialization.json.JsonElement? = null,
+    val input: JsonElement? = null,
     val output: String? = null,
     val title: String? = null
 )
