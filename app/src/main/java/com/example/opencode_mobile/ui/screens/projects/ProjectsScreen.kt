@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.opencode_mobile.data.api.ProjectDto
 import com.example.opencode_mobile.ui.components.SearchBar
+import com.example.opencode_mobile.util.formatTimestamp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -162,16 +163,4 @@ private fun ProjectCard(
     }
 }
 
-private fun formatTimestamp(epochMillis: Long): String {
-    val diff = System.currentTimeMillis() - epochMillis
-    return when {
-        diff < 60_000 -> "just now"
-        diff < 3_600_000 -> "${diff / 60_000}m ago"
-        diff < 86_400_000 -> "${diff / 3_600_000}h ago"
-        diff < 604_800_000 -> "${diff / 86_400_000}d ago"
-        else -> {
-            val sdf = java.text.SimpleDateFormat("M/d/yyyy", java.util.Locale.US)
-            sdf.format(java.util.Date(epochMillis))
-        }
-    }
-}
+

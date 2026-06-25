@@ -109,6 +109,8 @@ fun createApiService(baseUrl: String, okHttpClient: OkHttpClient): OpencodeApiSe
         .create(OpencodeApiService::class.java)
 }
 
+private val sseJson = Json { ignoreUnknownKeys = true; isLenient = true }
+
 fun createSseListener(
     onEvent: (EventDto) -> Unit,
     onFailure: (Throwable) -> Unit = {},
@@ -118,8 +120,7 @@ fun createSseListener(
         override fun onEvent(eventSource: okhttp3.sse.EventSource, id: String?, type: String?, data: String) {
             if (data.isNotBlank()) {
                 try {
-                    val json = Json { ignoreUnknownKeys = true; isLenient = true }
-                    val event = json.decodeFromString<EventDto>(data)
+                    val event = sseJson.decodeFromString<EventDto>(data)
                     onEvent(event)
                 } catch (_: Exception) { }
             }

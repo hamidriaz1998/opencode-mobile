@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.example.opencode_mobile.data.api.MessageWithPartsDto
 import com.example.opencode_mobile.data.api.PartDto
-import com.example.opencode_mobile.ui.components.CommandWidget
 import com.example.opencode_mobile.ui.components.DiffCard
 import com.example.opencode_mobile.ui.components.DiffLine
 import com.example.opencode_mobile.ui.components.DiffLineType
