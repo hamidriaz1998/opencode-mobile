@@ -96,7 +96,7 @@ data class MessageDto(
     val cost: Double? = null,
     val tokens: TokensDto? = null,
     val finish: String? = null,
-    val summary: MessageSummaryDto? = null,
+    val summary: kotlinx.serialization.json.JsonElement? = null,
     val error: ErrorDto? = null
 )
 
